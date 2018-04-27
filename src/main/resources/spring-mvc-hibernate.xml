@@ -17,7 +17,7 @@
 			<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>
 	<!-- 加载service,此时要排除要controller,因为controller已经spring-mvc中加载过了 -->
-	<context:component-scan base-package="org.jeecgframework.web.*">
+	<context:component-scan base-package="org.jeecgframework.*">
 			<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>
 

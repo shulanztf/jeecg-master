@@ -12,14 +12,14 @@
 	default-autowire="byName" default-lazy-init="false">
 
 
-	<!-- 定时任务配置 scheduler 方式 注解 暂时不支持动态更新 -->
+	<!-- 定时任务配置 scheduler 方式 注解 暂时不支持动态更新
 	<context:component-scan base-package="org.jeecgframework.core.timer" />
 	<task:executor id="executor" pool-size="5" />
 	<task:scheduler id="scheduler" pool-size="10" />
-	<task:annotation-driven executor="executor"
-		scheduler="scheduler" />
+	<task:annotation-driven executor="executor" scheduler="scheduler" />
+	 -->
 
-	<!-- 定时任务配置 taskDemoService 可配置到管理界面 -->
+	<!-- 定时任务配置 taskDemoService 可配置到管理界面 
 	<bean id="taskDemoServiceTaskJob"
 		class="org.jeecgframework.core.timer.DataBaseMethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="taskDemoService" />
@@ -30,8 +30,9 @@
 		<property name="jobDetail" ref="taskDemoServiceTaskJob" />
 		<property name="cronExpression" value="0 0/1 * * * ?" />
 	</bean>
+	-->
 
-	<!-- 定时任务配置 smsSendTask 可配置到管理界面 -->
+	<!-- 定时任务配置 smsSendTask 可配置到管理界面 
 	<bean id="smsSendTaskJob"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="smsSendTask" />
@@ -43,16 +44,18 @@
 		<property name="jobDetail" ref="smsSendTaskJob" />
 		<property name="cronExpression" value="0 0/1 * * * ?" />
 	</bean>
+	-->
 
-	<!-- 定时任务调度器 -->
-	<bean id="schedulerFactory" lazy-init="false" autowire="no"
-		class="org.jeecgframework.core.timer.DataBaseSchedulerFactoryBean">
+	<!-- 定时任务调度器	 -->
+				<!-- 
+	<bean id="schedulerFactory" lazy-init="false" autowire="no" class="org.jeecgframework.core.timer.DataBaseSchedulerFactoryBean">
 		<property name="triggers">
 			<list>
 				<ref bean="taskDemoServiceTaskCronTrigger" />
-				<!-- <ref bean="smsSendTaskCronTrigger" /> -->
+				<ref bean="smsSendTaskCronTrigger" />
 			</list>
 		</property>
 	</bean>
+				 -->
 
 </beans>

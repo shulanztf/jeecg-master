@@ -1,5 +1,7 @@
 package org.jeecgframework.core.timer;
 
+import java.text.ParseException;
+
 import org.jeecgframework.web.system.pojo.base.TSTimeTaskEntity;
 import org.jeecgframework.web.system.service.TimeTaskServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +21,11 @@ public class DataBaseCronTriggerBeanLocal extends CronTriggerFactoryBean {
 
 	/**
 	 * 读取数据库更新文件
+	 * 
+	 * @throws ParseException
 	 */
 	@Override
-	public void afterPropertiesSet() {
+	public void afterPropertiesSet() throws ParseException {
 		super.afterPropertiesSet();
 		TSTimeTaskEntity task = timeTaskService.findUniqueByProperty(TSTimeTaskEntity.class, "taskId",
 				this.getObject().getName());

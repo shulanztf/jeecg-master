@@ -21,22 +21,24 @@ import org.quartz.CronTrigger;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
 import org.springframework.stereotype.Service;
 
 /**
  * 动态任务,用以动态调整Spring的任务
+ * 
  * @author JueYue
  * @date 2013-9-20
  * @version 1.0
  */
-@Service(value="dynamicTask")
+@Service(value = "dynamicTask")
 public class DynamicTask {
-	
-	private static Logger logger = Logger.getLogger(DynamicTask.class);
 
-	@Resource
-	private Scheduler schedulerFactory;
-	
+	private static Logger logger = Logger.getLogger(DynamicTask.class);
+// TODO 任务调度组件待升级
+//	@Resource
+//	private Scheduler schedulerFactory;
+
 	/**
 	 * 更新定时任务的触发表达式
 	 * 
@@ -46,20 +48,18 @@ public class DynamicTask {
 	 *            触发表达式
 	 * @return 成功则返回true，否则返回false
 	 */
-	public boolean startOrStop(String triggerName,
-			boolean start) {
+	public boolean startOrStop(String triggerName, boolean start) {
 		try {
-			CronTrigger trigger = (CronTrigger) getTrigger(triggerName,
-					Scheduler.DEFAULT_GROUP);
-			if(start){
-				schedulerFactory.resumeTrigger(trigger.getName(), trigger.getGroup());
+			CronTrigger trigger = (CronTrigger) getTrigger(triggerName, Scheduler.DEFAULT_GROUP);
+			if (start) {
+//				schedulerFactory.resumeTrigger(trigger.getName(), trigger.getGroup());
 				logger.info("trigger the start successfully!!");
-			}else{
-				schedulerFactory.pauseTrigger(trigger.getName(), trigger.getGroup());
+			} else {
+//				schedulerFactory.pauseTrigger(trigger.getName(), trigger.getGroup());
 				logger.info("trigger the pause successfully!!");
 			}
 			return true;
-		}  catch (SchedulerException e) {
+		} catch (Exception e) {
 			logger.error("Fail to reschedule. " + e);
 			return false;
 		}
@@ -74,11 +74,9 @@ public class DynamicTask {
 	 *            触发表达式
 	 * @return 成功则返回true，否则返回false
 	 */
-	public boolean updateCronExpression(String triggerName,
-			String cronExpression) {
+	public boolean updateCronExpression(String triggerName, String cronExpression) {
 		try {
-			CronTrigger trigger = (CronTrigger) getTrigger(triggerName,
-					Scheduler.DEFAULT_GROUP);
+			CronTrigger trigger = (CronTrigger) getTrigger(triggerName, Scheduler.DEFAULT_GROUP);
 			if (trigger == null) {
 				return false;
 			}
@@ -87,16 +85,14 @@ public class DynamicTask {
 				return true;
 			}
 			trigger.setCronExpression(cronExpression);
-			schedulerFactory.rescheduleJob(trigger.getName(), trigger.getGroup(),
-					trigger);
-			updateSpringMvcTaskXML(trigger,cronExpression);
+//			schedulerFactory.rescheduleJob(trigger.getName(), trigger.getGroup(), trigger);
+			updateSpringMvcTaskXML(trigger, cronExpression);
 			logger.info("Update the cronExpression successfully!!");
 			return true;
 		} catch (ParseException e) {
-			logger.error("The new cronExpression - " + cronExpression
-					+ " not conform to the standard. " + e);
+			logger.error("The new cronExpression - " + cronExpression + " not conform to the standard. " + e);
 			return false;
-		} catch (SchedulerException e) {
+		} catch (Exception e) {
 			logger.error("Fail to reschedule. " + e);
 			return false;
 		}
@@ -122,22 +118,22 @@ public class DynamicTask {
 			return null;
 		}
 		try {
-			trigger = schedulerFactory.getTrigger(triggerName, groupName);
-		} catch (SchedulerException e) {
-			logger.warn("Fail to get the trigger (triggerName: " + triggerName
-					+ ", groupName : " + groupName + ")");
+//			trigger = schedulerFactory.getTrigger(triggerName, groupName);
+		} catch (Exception e) {
+			logger.warn("Fail to get the trigger (triggerName: " + triggerName + ", groupName : " + groupName + ")");
 			return null;
 		}
 		if (trigger == null) {
-			logger.warn("Can not found the trigger of triggerName: "
-					+ triggerName + ", groupName : " + groupName);
+			logger.warn("Can not found the trigger of triggerName: " + triggerName + ", groupName : " + groupName);
 		}
 		return trigger;
 	}
+
 	/**
 	 * 更新spring-mvc-timeTask.xml 配置文件
+	 * 
 	 * @param trigger
-	 * @param cronExpression 
+	 * @param cronExpression
 	 */
 	@SuppressWarnings("unchecked")
 	public synchronized static void updateSpringMvcTaskXML(CronTrigger trigger, String cronExpression) {
@@ -155,12 +151,10 @@ public class DynamicTask {
 		Element root = document.getRootElement();
 		List<Element> beans = root.elements();
 		for (Element bean : beans) {
-			if(bean.attribute("id")!=null&&
-					bean.attribute("id").getValue().equals(trigger.getName())){
+			if (bean.attribute("id") != null && bean.attribute("id").getValue().equals(trigger.getName())) {
 				beans = bean.elements();
 				for (Element temp : beans) {
-					if(temp.attribute("name")!=null&&
-							temp.attribute("name").getValue().equals("cronExpression")){
+					if (temp.attribute("name") != null && temp.attribute("name").getValue().equals("cronExpression")) {
 						temp.attribute("value").setValue(cronExpression);
 						break;
 					}
@@ -168,22 +162,22 @@ public class DynamicTask {
 				break;
 			}
 		}
-		XMLWriter  fileWriter = null;
+		XMLWriter fileWriter = null;
 		try {
 			OutputFormat xmlFormat = OutputFormat.createPrettyPrint();
 			xmlFormat.setEncoding("utf-8");
-			fileWriter = new XMLWriter(new FileOutputStream(file),xmlFormat);
+			fileWriter = new XMLWriter(new FileOutputStream(file), xmlFormat);
 			fileWriter.write(document);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}finally{
+		} finally {
 			try {
 				fileWriter.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
 
 }
