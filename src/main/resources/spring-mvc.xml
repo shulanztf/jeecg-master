@@ -14,6 +14,9 @@
 	<context:component-scan base-package="org.jeecgframework.*,com.jeecg.*">
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />
 	</context:component-scan>
+	<context:component-scan base-package="com.ztf.backend.*">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />
+	</context:component-scan>
 
 	<!-- ApplicationContext -->
 	<bean class="org.jeecgframework.core.util.ApplicationContextUtil"></bean>
@@ -40,18 +43,13 @@
 		</property>
 	</bean>
 	<!-- 默认的视图解析器 在上边的解析错误时使用 (默认使用html)- -->
-	<bean id="defaultViewResolver"
-		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
-		p:order="3">
-		<property name="viewClass"
-			value="org.springframework.web.servlet.view.JstlView" />
+	<bean id="defaultViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:order="3">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
 		<property name="contentType" value="text/html" />
 		<property name="prefix" value="/webpage/" />
 		<property name="suffix" value=".jsp" />
 	</bean>
-	<bean id="multipartResolver"
-		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
-		p:defaultEncoding="UTF-8">
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" p:defaultEncoding="UTF-8">
 		<property name="maxUploadSize">
 			<value>104857600</value>
 		</property>
@@ -61,8 +59,7 @@
 	</bean>
 
     <!-- Bean解析器,级别高于默认解析器,寻找bean对象进行二次处理 -->
-    <bean id="beanNameViewResolver"
-          class="org.springframework.web.servlet.view.BeanNameViewResolver" p:order="0">
+    <bean id="beanNameViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver" p:order="0">
     </bean>
     <!-- Excel 处理 根据用户输入进行对象处理 -->
     <bean id="jeecgExcelView" class="org.jeecgframework.poi.excel.view.JeecgSingleExcelView" />
@@ -70,13 +67,11 @@
     <bean id="jeecgTemplateWordView" class="org.jeecgframework.poi.excel.view.JeecgTemplateWordView" />
     <bean id="jeecgMapExcelView" class="org.jeecgframework.poi.excel.view.JeecgMapExcelView" />
 	<!-- 方言 -->
-	<bean id="dialect"
-		class="org.jeecgframework.core.common.hibernate.dialect.DialectFactoryBean">
+	<bean id="dialect" class="org.jeecgframework.core.common.hibernate.dialect.DialectFactoryBean">
 		<property name="dbType" value="${jdbc.dbType}" />
 	</bean>
 	<!-- 异常处理类 -->
-	<bean id="exceptionHandler"
-		class="org.jeecgframework.core.common.exception.GlobalExceptionResolver" />
+	<bean id="exceptionHandler" class="org.jeecgframework.core.common.exception.GlobalExceptionResolver" />
 	<!-- 拦截器 -->
 	<mvc:interceptors>
 		<mvc:interceptor>
@@ -122,4 +117,5 @@
 	<!-- jeecg plugin dev
 	<import resource="classpath:config/spring-config-p3.xml" />
 	 -->
+
 </beans>
